@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import firebase from '../../backend/firebase';
 
@@ -35,7 +36,7 @@ export default class Home extends Component {
   renderRow(data) {
     return (
       <TouchableOpacity
-        onPress={() => Linking.openURL(data.url)}
+        onPress={() => Actions.list({ title: data.name, playlistid: data.playlistid })}
         style={{ backgroundColor: 'white', width: this.itemWidth, height: 200 }}>
           <Image source={{ uri: data.image }} style={{ flex: 1, justifyContent: 'flex-end' }} >
             <View style={{ opacity: 0.8, }}>
@@ -43,13 +44,14 @@ export default class Home extends Component {
               <Text style={{ textAlign: 'center' }}><Icon name="calendar" size={14} style={{ color: 'blue' }} /> {data.date}</Text>
             </View>
           </Image>
-               </TouchableOpacity>
+      </TouchableOpacity>
     )
   }
 
   render() {
     return (
       <ListView
+        enableEmptySections={true}
         contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
         style={{ flex: 1, }}
         dataSource={this.state.dataSource}

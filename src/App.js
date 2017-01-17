@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Home from './components/Home';
+import TalkList from './components/TalkList';
 
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from './components/TabBar';
@@ -16,10 +17,10 @@ import {
 export default class App extends Component {
   render() {
     return (
-      <ScrollableTabView style={{marginTop: 20, }} renderTabBar={() => <TabBar someProp={'here'} />}>
-        <Home tabLabel="New" />
-        <Home tabLabel="Favorite" />
-      </ScrollableTabView>
+      <Router style={{ paddingTop: 65 }}>
+        <Scene component={Home} title="Top" key="top" />
+        <Scene component={TalkList} title="List" key="list" />
+      </Router>
     )
   }
 }
