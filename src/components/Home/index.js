@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import {
   View,
   Text,
@@ -7,15 +9,14 @@ import {
   Image,
   Linking,
   TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
-
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import firebase from '../../backend/firebase';
 
+import FilterModal from '../FilterModal';
+import Color from '../common/Colors';
 
 export default compose(
   connect(
@@ -33,7 +34,7 @@ export default compose(
       dataSource: this.ds.cloneWithRows([]),
     };
 
-    this.itemWidth = (Dimensions.get('window').width) / 2;
+
     this.renderRow = this.renderRow.bind(this);
   }
 
@@ -43,20 +44,24 @@ export default compose(
     });
   }
 
-  renderRow(data) {
-    const filterItems = this.props.filter.items;
+  renderRow(data, filters) {
     let isMatch = false;
-    data.tags.forEach((tag) => filterItems.forEach((item) => tag === item ? isMatch = true : null));
+    if (filters.length === 0) isMatch = true;
+    if (!isMatch) data.tags.forEach((tag) => filters.forEach((item) => tag === item && (isMatch = true)));
 
-    if (filterItems.length === 0 || isMatch) {
+    if (isMatch) {
       return (
         <TouchableOpacity
-          onPress={() => Actions.list({ title: data.name, playlistid: data.playlistid })}
-          style={{ backgroundColor: 'white', width: this.itemWidth, height: 200 }}>
-          <Image source={{ uri: data.image }} style={{ flex: 1, justifyContent: 'flex-end' }} >
-            <View style={{ opacity: 0.8, }}>
-              <Text style={{ fontWeight: 'bold', textAlign: 'center' }}><Icon name="youtube-play" size={18} style={{ color: '#e62117' }} /> {data.name}</Text>
-              <Text style={{ textAlign: 'center' }}><Icon name="calendar" size={14} style={{ color: 'blue' }} /> {data.date}</Text>
+          onPress={() => Actions.talks({ title: data.name, playlistid: data.playlistid })}
+          style={styles.confItem}>
+          <Image source={{ uri: data.image }} style={styles.confItemImage} >
+            <View style={styles.confItemInfoArea}>
+              <Text style={styles.confItemInfoAreaTitle}>
+                <Icon name="youtube-play" style={styles.confItemInfoAreaTitleIcon} /> {data.name}
+              </Text>
+              <Text style={styles.confItemInfoAreaDate}>
+                <Icon name="calendar" style={styles.confItemInfoAreaDateIcon} /> {data.date}
+              </Text>
             </View>
           </Image>
         </TouchableOpacity>
@@ -66,29 +71,87 @@ export default compose(
     return null;
   }
 
-  renderHeader(items) {
-    if (items.length > 0) {
-      return (
-        <View style={{ backgroundColor:'#0277BD', height:30, width: Dimensions.get('window').width, justifyContent: 'center', paddingLeft: 5, paddingRight: 5 }}>
-          <Text style={{color: 'white',}}><Icon name="filter" /> {items.join(',')}</Text>
-        </View>
-      );
-    }
-    return undefined;
+  renderHeader(filters) {
+    return (
+      <View style={styles.filterArea}>
+        <Text style={styles.filterAreaText}>
+          <Icon name="filter" style={styles.filterAreaTextIcon}/> {filters.join(', ')}
+        </Text>
+      </View>
+    );
   }
 
   render() {
-    const filterItems = this.props.filter.items;
+    const { visible, selected } = this.props.filter;
     return (
-      <ListView
-        id={`conf-list-${filterItems}`}
-        enableEmptySections={true}
-        contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
-        style={{ flex: 1, }}
-        dataSource={this.state.dataSource}
-        renderHeader={() => this.renderHeader(filterItems)}
-        renderRow={(rowData) => this.renderRow(rowData)}
-      />
+      <View style={styles.root}>
+        <ListView
+          id={`conf-list-${selected.length}`}
+          enableEmptySections={true}
+          contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
+          dataSource={this.state.dataSource}
+          renderHeader={() => selected.length > 0 && this.renderHeader(selected)}
+          renderRow={(rowData) => this.renderRow(rowData, selected)}
+        />
+        {visible && <FilterModal />}
+      </View>
     );
   }
+});
+
+const deviceWidth = Dimensions.get('window').width;
+const itemWidth = (Dimensions.get('window').width) / 2;
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+
+  filterArea: {
+    height: 30,
+    width: deviceWidth,
+
+    justifyContent: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
+
+    borderTopColor: Color.cellBorder,
+    borderBottomColor: Color.cellBorder,
+    backgroundColor: Color.darkBackground,
+  },
+  filterAreaText: {
+    color: 'white',
+    fontStyle: 'italic',
+  },
+  filterAreaTextIcon: {
+    fontSize: 18,
+  },
+
+  confItem: {
+    backgroundColor: 'white',
+    width: itemWidth,
+    height: 200,
+  },
+  confItemImage: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  confItemInfoArea: {
+    opacity: 0.8,
+  },
+  confItemInfoAreaTitle: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  confItemInfoAreaTitleIcon: {
+    color: Color.youtube,
+    fontSize: 18,
+  },
+  confItemInfoAreaDate: {
+    textAlign: 'center',
+  },
+  confItemInfoAreaDateIcon: {
+    color: Color.calender,
+    fontSize: 14,
+  }
+
 });
