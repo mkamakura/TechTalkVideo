@@ -10,12 +10,25 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Modal from 'react-native-modalbox';
-import firebase from '../../backend/firebase';
 
-export default class FilterModal extends Component {
+import { filterAdd, filterRemove } from '../../redux/modules/filter';
+
+export default compose(
+  connect(
+    (state) => ({
+      filter: state.filter,
+    }),
+    (dispatch) => ({
+      addFilter: (name) => dispatch(filterAdd({ name })),
+      removeFilter: (name) => dispatch(filterRemove({ name })),
+    }),
+  )
+)(class FilterModal extends Component {
 
   constructor(props) {
     super(props);
@@ -23,7 +36,6 @@ export default class FilterModal extends Component {
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: this.ds.cloneWithRows(['JavaScript', 'CSS', 'Node.js', 'Google', 'Facebook']),
-      checked: ['Node.js', 'Facebook'],
     };
 
     this.width = Dimensions.get('window').width;
@@ -36,17 +48,19 @@ export default class FilterModal extends Component {
   }
 
   renderRow(data) {
-    console.log('checked:', this.state.checked);
     return (
-      <View style={{ width: this.width, height: 50, justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: 'white' }}>
+      <TouchableHighlight style={{ width: this.width, height: 50, justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: 'white' }}
+                          onPress={() => this.props.filter.items.includes(data) ? this.props.removeFilter(data) : this.props.addFilter(data)}>
         <Text style={{ color: "white", paddingLeft: 10, fontStyle: 'italic' }}>
-          <Icon name={this.state.checked.includes(data) ? 'circle' : 'circle-o'} size={18} style={{ color: this.state.checked.includes(data) ? '#FF80AB' : 'white', paddingRight: 5}} /> {data}
+          <Icon name={this.props.filter.items.includes(data) ? 'circle' : 'circle-o'} size={18} style={{ color: this.props.filter.items.includes(data) ? '#FF80AB' : 'white', paddingRight: 5}} /> {data}
         </Text>
-      </View>
+      </TouchableHighlight>
     );
   }
 
   render() {
+    const { filter } = this.props;
+
     if(this.props.hide){
       return (
         <View>
@@ -54,9 +68,6 @@ export default class FilterModal extends Component {
       )
     } else {
       return (
-        // <TouchableHighlight style={{flex: 1}} onPress={this.dismissModal}>
-        //   <Text style={{flex: 1}}>{this.props.message}</Text>
-        // </TouchableHighlight>
         <Modal
           animationDuration={300}
           swipeThreshold={100}
@@ -72,6 +83,7 @@ export default class FilterModal extends Component {
             <Text>CLEAR</Text>
           </View>
           <ListView
+            key={`filter-list-${filter.items.length}`}
             contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
             style={{ backgroundColor: '#0277BD', }}
             dataSource={this.state.dataSource}
@@ -81,4 +93,4 @@ export default class FilterModal extends Component {
       );
     }
   }
-}
+});
