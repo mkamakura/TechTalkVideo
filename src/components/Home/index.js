@@ -67,11 +67,14 @@ export default compose(
   }
 
   renderHeader(items) {
-    return (
-      <View style={{ backgroundColor:'#0277BD', height:30, width: Dimensions.get('window').width, justifyContent: 'center', paddingLeft: 5, paddingRight: 5 }}>
-        <Text style={{color: 'white',}}>{items.join(',')}</Text>
-      </View>
-    );
+    if (items.length > 0) {
+      return (
+        <View style={{ backgroundColor:'#0277BD', height:30, width: Dimensions.get('window').width, justifyContent: 'center', paddingLeft: 5, paddingRight: 5 }}>
+          <Text style={{color: 'white',}}><Icon name="filter" /> {items.join(',')}</Text>
+        </View>
+      );
+    }
+    return undefined;
   }
 
   render() {

@@ -30,8 +30,8 @@ export default class App extends Component {
         <RouterWithRedux>
           <Scene key="modal" component={Modal} >
             <Scene key="root"  title="Tab #1" navigationBarStyle={{backgroundColor:'#B3E5FC',}} titleStyle={{color:'#01579B'}} style={{ paddingTop: 64 }}>
-              <Scene key="tab1_1" component={Home} title="Conferences"
-                     onRight={() => Actions.FilterModal({ message: 'hogehoge', hide: false })}
+              <Scene key="home" component={Home} title="Conferences"
+                     onRight={() => Actions.FilterModal({ hide: false })}
                      rightTitle="FILTER" />
               <Scene key="list" component={TalkList} title="Tab #1_2" titleStyle={{color:'#01579B'}}/>
             </Scene>

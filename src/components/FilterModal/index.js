@@ -16,7 +16,7 @@ import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Modal from 'react-native-modalbox';
 
-import { filterAdd, filterRemove } from '../../redux/modules/filter';
+import { filterAdd, filterRemove, filterClear } from '../../redux/modules/filter';
 
 export default compose(
   connect(
@@ -26,6 +26,7 @@ export default compose(
     (dispatch) => ({
       addFilter: (name) => dispatch(filterAdd({ name })),
       removeFilter: (name) => dispatch(filterRemove({ name })),
+      clearFilter: () => dispatch(filterClear()),
     }),
   )
 )(class FilterModal extends Component {
@@ -80,7 +81,7 @@ export default compose(
         >
           <View style={{ height: 30, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
             <Text onPress={this.dismissModal}>CANCEL</Text>
-            <Text>CLEAR</Text>
+            <Text onPress={this.props.clearFilter}>CLEAR</Text>
           </View>
           <ListView
             key={`filter-list-${filter.items.length}`}
