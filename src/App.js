@@ -4,6 +4,7 @@ import createStore from './redux/createStore';
 import {
   Scene,
   Router,
+  Actions,
 } from 'react-native-router-flux';
 
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
@@ -11,6 +12,7 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Home from './components/Home';
 import TalkList from './components/TalkList';
 import Color from './components/common/Colors';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { visibleFilter } from './redux/modules/filter';
 
 const RouterWithRedux = connect()(Router);
@@ -34,7 +36,12 @@ export default class App extends Component {
                      </TouchableOpacity>)
                    }
             />
-            <Scene key="talks" component={TalkList} title="Talks" />
+            <Scene key="talks" component={TalkList} title="Talks" renderBackButton={() => (
+              <TouchableOpacity
+                onPress={() => Actions.pop()}>
+                <Icon name="angle-left" style={styles.backButton} />
+              </TouchableOpacity>
+            )} />
 
           </Scene>
         </RouterWithRedux>
@@ -48,6 +55,10 @@ const styles = StyleSheet.create({
     paddingTop: 64,
   },
   rightText: {
+    color: Color.darkText,
+  },
+  backButton: {
+    fontSize: 18,
     color: Color.darkText,
   }
 });

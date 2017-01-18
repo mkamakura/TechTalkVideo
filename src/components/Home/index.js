@@ -15,6 +15,7 @@ import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import firebase from '../../backend/firebase';
 
+import { initFilter } from '../../redux/modules/filter';
 import FilterModal from '../FilterModal';
 import Color from '../common/Colors';
 
@@ -22,6 +23,9 @@ export default compose(
   connect(
     (state) => ({
       filter: state.filter,
+    }),
+    (dispatch) => ({
+      initFilter: (names) => dispatch(initFilter({ names })),
     }),
   )
 )(class Home extends Component {
@@ -40,7 +44,13 @@ export default compose(
 
   componentWillMount() {
     firebase.database().ref('/').on('value', (snapshot) => {
+      const confs = snapshot.val();
+      const filterMaster = [];
       this.setState({ dataSource: this.ds.cloneWithRows(snapshot.val()) });
+      confs.forEach((conf) =>
+        conf.tags.forEach((tag) =>
+          !filterMaster.includes(tag) && filterMaster.push(tag)));
+      this.props.initFilter(filterMaster);
     });
   }
 

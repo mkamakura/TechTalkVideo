@@ -39,11 +39,8 @@ export default compose(
 
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: this.ds.cloneWithRows(['JavaScript', 'CSS', 'Node.js', 'Google', 'Facebook']),
+      dataSource: this.ds.cloneWithRows(this.props.filter.master),
     };
-
-    this.width = Dimensions.get('window').width;
-    this.height = Dimensions.get('window').height;
   }
 
   renderRow(data, id, selected) {
@@ -81,7 +78,7 @@ export default compose(
         swipeArea={0}
       >
         <View style={styles.header}>
-          <Text onPress={visibleFilter}>CANCEL</Text>
+          <Text onPress={visibleFilter}>CLOSE</Text>
           <Text onPress={clearFilter}>CLEAR</Text>
         </View>
         <ListView
