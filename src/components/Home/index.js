@@ -84,7 +84,7 @@ export default compose(
   renderHeader(filters) {
     return (
       <View style={styles.filterArea}>
-        <Text style={styles.filterAreaText}>
+        <Text style={styles.filterAreaText} ellipsizeMode="tail" numberOfLines={1}>
           <Icon name="filter" style={styles.filterAreaTextIcon}/> {filters.join(', ')}
         </Text>
       </View>
