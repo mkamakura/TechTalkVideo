@@ -15,29 +15,40 @@ export const visibleFilter = createAction(FILTER_VISIBLE);
 
 const INITIAL_STATE = {
   visible: false,
-  master: [],
-  selected: [],
+  tags: [{
+    name: '',
+    selected: false,
+  }],
 };
 
 export default handleActions({
   [FILTER_INIT]: (state, { payload: { names } }) => ({
     ...state,
-    master: names,
+    tags: names.map((name) => ({ name, selected: false })),
   }),
 
-  [FILTER_ADD]: (state, { payload: { name } }) => console.log('filer-add', name) || ({
+  [FILTER_ADD]: (state, { payload: { name } }) => ({
     ...state,
-    selected: [...state.selected, name],
+    tags: state.tags.map((tag) => {
+      if (tag.name === name) tag.selected = true;
+      return tag;
+    }),
   }),
 
   [FILTER_REMOVE]: (state, { payload: { name } }) => ({
     ...state,
-    selected: state.selected.filter((item) => item !== name),
+    tags: state.tags.filter((tag) => {
+      if (tag.name === name) tag.selected = false;
+      return tag;
+    }),
   }),
 
   [FILTER_CLEAR]: (state) => ({
     ...state,
-    selected: INITIAL_STATE.selected,
+    tags: state.tags.map((tag) => {
+      tag.selected = false;
+      return tag;
+    }),
   }),
 
   [FILTER_VISIBLE]: (state) => ({

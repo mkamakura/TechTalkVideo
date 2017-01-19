@@ -39,32 +39,40 @@ export default compose(
 
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: this.ds.cloneWithRows(this.props.filter.master),
+      dataSource: this.ds.cloneWithRows(this.props.filter.tags),
     };
   }
 
-  renderRow(data, id, selected) {
+  renderRow(data, id) {
     const { removeFilter, addFilter } = this.props;
     const style =
-      selected.includes(data) ? { backgroundColor: Color.tagColor[id] } : {borderColor: Color.tagColor[id], borderWidth: 1};
+      data.selected ? { backgroundColor: Color.tagColor[id] } : {borderColor: Color.tagColor[id], borderWidth: 1};
 
     return (
       <TouchableHighlight style={styles.listAreaRow}
-                          onPress={() => selected.includes(data) ? removeFilter(data) : addFilter(data)}>
+                          onPress={() => data.selected ? removeFilter(data.name) : addFilter(data.name)}>
         <View style={styles.listAreaView}>
           <View style={[styles.checkbox, style]} />
-          <Text style={styles.listAreaText}>{data}</Text>
+          <Text style={styles.listAreaText}>{data.name}</Text>
         </View>
       </TouchableHighlight>
     );
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      dataSource: this.ds.cloneWithRows(nextProps.filter.tags),
+    });
   }
 
   render() {
     const {
       visibleFilter,
       clearFilter,
-      filter
+      tags,
     } = this.props;
+
+    console.log('update render');
 
     return (
       <Modal
@@ -72,7 +80,7 @@ export default compose(
         swipeThreshold={100}
         position={"bottom"}
         isOpen={true}
-        onClosed={this.props.visibleFilter}
+        onClosed={visibleFilter}
         style={styles.root}
         swipeToClose={false}
         swipeArea={0}
@@ -82,11 +90,10 @@ export default compose(
           <Text onPress={clearFilter}>CLEAR</Text>
         </View>
         <ListView
-          key={`filter-list-${filter.selected.length}`}
           contentContainerStyle={{ flexWrap: 'wrap' }}
           style={{ backgroundColor: '#0277BD', }}
           dataSource={this.state.dataSource}
-          renderRow={(rowData, secid, rowId) => this.renderRow(rowData, rowId, filter.selected)}
+          renderRow={(rowData, secid, rowId) => this.renderRow(rowData, rowId)}
         />
       </Modal>
     );

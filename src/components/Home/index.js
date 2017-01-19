@@ -54,10 +54,10 @@ export default compose(
     });
   }
 
-  renderRow(data, filters) {
+  renderRow(data, filterTags) {
     let isMatch = false;
-    if (filters.length === 0) isMatch = true;
-    if (!isMatch) data.tags.forEach((tag) => filters.forEach((item) => tag === item && (isMatch = true)));
+    if (filterTags.length === 0) isMatch = true;
+    if (!isMatch) data.tags.forEach((confTag) => filterTags.forEach((filterTag) => confTag === filterTag.name && (isMatch = true)));
 
     if (isMatch) {
       return (
@@ -81,27 +81,28 @@ export default compose(
     return null;
   }
 
-  renderHeader(filters) {
+  renderHeader(tags) {
     return (
       <View style={styles.filterArea}>
         <Text style={styles.filterAreaText} ellipsizeMode="tail" numberOfLines={1}>
-          <Icon name="filter" style={styles.filterAreaTextIcon}/> {filters.join(', ')}
+          <Icon name="filter" style={styles.filterAreaTextIcon}/> {tags.map((tag) => tag.name).join(', ')}
         </Text>
       </View>
     );
   }
 
   render() {
-    const { visible, selected } = this.props.filter;
+    const { visible, tags } = this.props.filter;
+    const filterTags = tags.filter((tag) => tag.selected);
+
     return (
       <View style={styles.root}>
         <ListView
-          id={`conf-list-${selected.length}`}
           enableEmptySections={true}
           contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
           dataSource={this.state.dataSource}
-          renderHeader={() => selected.length > 0 && this.renderHeader(selected)}
-          renderRow={(rowData) => this.renderRow(rowData, selected)}
+          renderHeader={() => filterTags.length > 0 && this.renderHeader(filterTags)}
+          renderRow={(rowData) => this.renderRow(rowData, filterTags)}
         />
         {visible && <FilterModal />}
       </View>
