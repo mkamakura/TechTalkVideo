@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Spinner from 'react-native-spinkit';
 import firebase from '../../backend/firebase';
 
 import { initFilter } from '../../redux/modules/filter';
@@ -97,6 +98,11 @@ export default compose(
 
     return (
       <View style={styles.root}>
+        <Spinner style={styles.spinner}
+                 isVisible={this.state.dataSource.getRowCount() === 0}
+                 size={50}
+                 type='Pulse'
+                 color={Color.lightBackground} />
         <ListView
           enableEmptySections={true}
           contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
@@ -115,6 +121,7 @@ const itemWidth = (Dimensions.get('window').width) / 2;
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+    alignItems: 'center',
   },
 
   filterArea: {
@@ -163,6 +170,15 @@ const styles = StyleSheet.create({
   confItemInfoAreaDateIcon: {
     color: Color.calender,
     fontSize: 14,
-  }
+  },
+
+  spinner: {
+    marginTop: 50,
+  },
+
+  spinnerColor: {
+    color: 'white',
+  },
+
 
 });
