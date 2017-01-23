@@ -6,11 +6,12 @@ import {
   Text,
   ListView,
   Dimensions,
-  Image,
   Linking,
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import Image from 'react-native-image-progress';
+import ProgressBar from 'react-native-progress/Bar';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Spinner from 'react-native-spinkit';
@@ -65,7 +66,7 @@ export default compose(
         <TouchableOpacity
           onPress={() => Actions.talks({ title: data.name, playlistid: data.playlistid })}
           style={styles.confItem}>
-          <Image source={{ uri: data.image }} style={styles.confItemImage} >
+          <Image source={{ uri: data.image }} style={styles.confItemImage} indicator={ProgressBar}>
             <View style={styles.confItemInfoArea}>
               <Text style={styles.confItemInfoAreaTitle}>
                 <Icon name="youtube-play" style={styles.confItemInfoAreaTitleIcon} /> {data.name}
@@ -179,6 +180,4 @@ const styles = StyleSheet.create({
   spinnerColor: {
     color: 'white',
   },
-
-
 });

@@ -4,12 +4,17 @@ import {
   Text,
   ListView,
   Dimensions,
-  Image,
   Linking,
   TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
+import Image from 'react-native-image-progress';
+import ProgressBar from 'react-native-progress/Bar';
 import axios from 'axios';
+import Spinner from 'react-native-spinkit';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+import Color from '../common/Colors';
 
 export default class TalkList extends Component {
 
@@ -39,7 +44,7 @@ export default class TalkList extends Component {
       <TouchableOpacity
         onPress={() => Linking.openURL('https://www.youtube.com/watch?v=' + data.contentDetails.videoId)}
         style={{ backgroundColor: 'white', width: this.itemWidth, height: 200 }}>
-        <Image source={{ uri: data.snippet.thumbnails.high.url }} style={{ flex: 1, justifyContent: 'flex-end' }} >
+        <Image source={{ uri: data.snippet.thumbnails.high.url }} style={{ flex: 1, justifyContent: 'flex-end' }} indicator={ProgressBar}>
           <View style={{ opacity: 0.8, }}>
             <Text style={{ fontWeight: 'bold', textAlign: 'center' }}><Icon name="youtube-play" size={18} style={{ color: '#e62117' }} /> {data.snippet.title}</Text>
           </View>
@@ -50,13 +55,35 @@ export default class TalkList extends Component {
 
   render() {
     return (
-      <ListView
-        enableEmptySections={true}
-        contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
-        style={{ flex: 1, }}
-        dataSource={this.state.dataSource}
-        renderRow={(rowData) => this.renderRow(rowData)}
-      />
+      <View style={styles.root}>
+        <Spinner style={styles.spinner}
+                 isVisible={this.state.dataSource.getRowCount() === 0}
+                 size={50}
+                 type='Pulse'
+                 color={Color.lightBackground} />
+        <ListView
+          enableEmptySections={true}
+          contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
+          style={{ flex: 1, }}
+          dataSource={this.state.dataSource}
+          renderRow={(rowData) => this.renderRow(rowData)}
+        />
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    alignItems: 'center',
+  },
+
+  spinner: {
+    marginTop: 50,
+  },
+
+  spinnerColor: {
+    color: 'white',
+  },
+});
