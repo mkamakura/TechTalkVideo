@@ -9,6 +9,7 @@ import {
   Linking,
   TouchableOpacity,
   StyleSheet,
+  ActionSheetIOS,
 } from 'react-native';
 import Image from 'react-native-image-progress';
 import ProgressBar from 'react-native-progress/Bar';
@@ -18,6 +19,7 @@ import Spinner from 'react-native-spinkit';
 import firebase from '../../backend/firebase';
 
 import { initFilter } from '../../redux/modules/filter';
+import { addBookmark, removeBookmark, initBookmark } from '../../redux/modules/bookmark';
 import FilterModal from '../FilterModal';
 import Color from '../common/Colors';
 
@@ -25,9 +27,13 @@ export default compose(
   connect(
     (state) => ({
       filter: state.filter,
+      bookbark: state.bookmark,
     }),
     (dispatch) => ({
       initFilter: (names) => dispatch(initFilter({ names })),
+      onAddBookmark: (name) => dispatch(addBookmark({ name })),
+      removeBookmark: (name) => dispatch(removeBookmark({ name })),
+      initBookmark: () => dispatch(initBookmark()),
     }),
   )
 )(class Home extends Component {
@@ -54,6 +60,16 @@ export default compose(
           !filterMaster.includes(tag) && filterMaster.push(tag)));
       this.props.initFilter(filterMaster);
     });
+
+    this.props.initBookmark();
+  }
+
+  onLongPress(name) {
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ['Bookmark', 'Cancel'],
+      cancelButtonIndex: 1,
+      title: name
+    }, (buttonIndex) => this.props.onAddBookmark(name));
   }
 
   renderRow(data, filterTags) {
@@ -65,6 +81,7 @@ export default compose(
       return (
         <TouchableOpacity
           onPress={() => Actions.talks({ title: data.name, playlistid: data.playlistid })}
+          onLongPress={() => this.onLongPress(data.name)}
           style={styles.confItem}>
           <Image source={{ uri: data.image }} style={styles.confItemImage} indicator={ProgressBar}>
             <View style={styles.confItemInfoArea}>
