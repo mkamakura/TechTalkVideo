@@ -63,7 +63,7 @@ export default class TalkList extends Component {
                  color={Color.lightBackground} />
         <ListView
           enableEmptySections={true}
-          contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
+          contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}
           style={{ flex: 1, }}
           dataSource={this.state.dataSource}
           renderRow={(rowData) => this.renderRow(rowData)}

@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     color: Color.darkText,
   },
   backButton: {
-    fontSize: 18,
+    fontSize: 32,
     color: Color.darkText,
   },
 });

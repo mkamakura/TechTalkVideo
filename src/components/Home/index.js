@@ -46,7 +46,7 @@ export default compose(
       dataSource: this.ds.cloneWithRows([]),
     };
 
-
+    this.itemWidth = deviceWidth / 2 > 200 ? 200 : deviceWidth / 2;
     this.renderRow = this.renderRow.bind(this);
   }
 
@@ -82,7 +82,7 @@ export default compose(
         <TouchableOpacity
           onPress={() => Actions.talks({ title: data.name, playlistid: data.playlistid })}
           onLongPress={() => this.onLongPress(data.name)}
-          style={styles.confItem}>
+          style={[styles.confItem, { width: this.itemWidth }]}>
           <Image source={{ uri: data.image }} style={styles.confItemImage} indicator={ProgressBar}>
             <View style={styles.confItemInfoArea}>
               <Text style={styles.confItemInfoAreaTitle}>
@@ -110,20 +110,24 @@ export default compose(
     );
   }
 
+  changeLayout() {
+    this.itemWidth = deviceWidth / 2 > 200 ? 200 : deviceWidth / 2;
+  }
+
   render() {
     const { visible, tags } = this.props.filter;
     const filterTags = tags.filter((tag) => tag.selected);
 
     return (
-      <View style={styles.root}>
+      <View style={styles.root} onLayout={() => this.changeLayout()}>
         <Spinner style={styles.spinner}
                  isVisible={this.state.dataSource.getRowCount() === 0}
                  size={50}
                  type='Pulse'
-                 color={Color.lightBackground} />
+                 color='white' />
         <ListView
           enableEmptySections={true}
-          contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
+          contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}
           dataSource={this.state.dataSource}
           renderHeader={() => filterTags.length > 0 && this.renderHeader(filterTags)}
           renderRow={(rowData) => this.renderRow(rowData, filterTags)}
@@ -135,11 +139,10 @@ export default compose(
 });
 
 const deviceWidth = Dimensions.get('window').width;
-const itemWidth = (Dimensions.get('window').width) / 2;
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    alignItems: 'center',
+    backgroundColor: Color.darkBackground,
   },
 
   filterArea: {
@@ -164,7 +167,6 @@ const styles = StyleSheet.create({
 
   confItem: {
     backgroundColor: 'white',
-    width: itemWidth,
     height: 200,
   },
   confItemImage: {
@@ -192,9 +194,7 @@ const styles = StyleSheet.create({
 
   spinner: {
     marginTop: 50,
+    marginLeft: deviceWidth / 2 - 25,
   },
 
-  spinnerColor: {
-    color: 'white',
-  },
 });
