@@ -41,7 +41,7 @@ export default class App extends Component {
                  navigationBarStyle={{ backgroundColor: Color.lightBackground }}
                  style={styles.tabBarStyle}>
 
-            <Scene key="tab1"  title="Confs" initial icon={TabIcon} style={{paddingTop: 64, paddingBottom: 35}}
+            <Scene key="tab1"  title="Confs" initial icon={TabIcon} style={styles.contentStyle}
                    navigationBarStyle={{backgroundColor: Color.lightBackground}} >
               <Scene key="home" component={Home} title="Conferences" titleStyle={{ color: Color.darkText }} renderRightButton={() => (
                 <TouchableOpacity onPress={() => store.dispatch(visibleFilter())}>
@@ -54,7 +54,12 @@ export default class App extends Component {
                 </TouchableOpacity>)} />
             </Scene>
 
-            <Scene key="tab2"  title="Info" icon={TabIcon} style={{paddingTop: 64, paddingBottom: 35}}
+            <Scene key="tab2" title="Bookmarks" icon={TabIcon} style={styles.contentStyle}
+                   navigationBarStyle={{backgroundColor: Color.lightBackground}}>
+              <Scene key="bookmarks" component={Home} title="bookmarks" />
+            </Scene>
+
+            <Scene key="tab3" title="Info" icon={TabIcon} style={styles.contentStyle}
                    navigationBarStyle={{backgroundColor: Color.lightBackground}}>
               <Scene key="info" component={Information} title="information" />
             </Scene>
@@ -67,9 +72,15 @@ export default class App extends Component {
   }
 };
 
+const TAB_HEIGHT = 40;
+
 const styles = StyleSheet.create({
+  contentStyle: {
+    paddingTop: 64,
+    paddingBottom: TAB_HEIGHT,
+  },
   tabBarStyle: {
-    height: 35,
+    height: TAB_HEIGHT,
     borderTopWidth: .5,
     borderColor: Color.cellBorder,
     backgroundColor: Color.lightBackground,
@@ -79,7 +90,8 @@ const styles = StyleSheet.create({
     color: Color.darkText,
   },
   backButton: {
-    fontSize: 32,
+    fontSize: 34,
+    paddingRight: 10,
     color: Color.darkText,
   },
 });
