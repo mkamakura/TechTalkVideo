@@ -33,12 +33,12 @@ export default handleActions({
     ...state,
   }),
 
-  [BOOKMARK_ADD]: (state, { payload: { name } }) => console.log('async storage success') || ({
+  [BOOKMARK_ADD]: (state, { payload: { name } }) => ({
     ...state,
     items: [...state.items, name],
   }),
 
-  [BOOKMARK_ADD_FAIL]: (state, { payload: { name } }) => console.log('async storage fail') || ({
+  [BOOKMARK_ADD_FAIL]: (state, { payload: { name } }) => ({
     ...state,
   }),
 

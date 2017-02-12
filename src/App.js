@@ -26,7 +26,9 @@ const store = createStore();
 class TabIcon extends React.Component {
   render(){
     return (
-      <Text style={{color: this.props.selected ? Color.darkText : Color.lightText}}>{this.props.title}</Text>
+      <Icon name={this.props.title}
+            style={{color: this.props.selected ? Color.darkText : Color.lightText}}
+            size={20} />
     );
   }
 }
@@ -41,7 +43,7 @@ export default class App extends Component {
                  navigationBarStyle={{ backgroundColor: Color.lightBackground }}
                  style={styles.tabBarStyle}>
 
-            <Scene key="tab1"  title="Confs" initial icon={TabIcon} style={styles.contentStyle}
+            <Scene key="tab1"  title="home" initial icon={TabIcon} style={styles.contentStyle}
                    navigationBarStyle={{backgroundColor: Color.lightBackground}} >
               <Scene key="home" component={Home} title="Conferences" titleStyle={{ color: Color.darkText }} renderRightButton={() => (
                 <TouchableOpacity onPress={() => store.dispatch(visibleFilter())}>
@@ -54,15 +56,21 @@ export default class App extends Component {
                 </TouchableOpacity>)} />
             </Scene>
 
-            <Scene key="tab2" title="Bookmarks" icon={TabIcon} style={styles.contentStyle}
+            <Scene key="tab2" title="bookmark" icon={TabIcon} style={styles.contentStyle}
                    navigationBarStyle={{backgroundColor: Color.lightBackground}}>
               <Scene key="bookmarks" component={Home} title="bookmarks" />
             </Scene>
 
-            <Scene key="tab3" title="Info" icon={TabIcon} style={styles.contentStyle}
+            <Scene key="tab3" title="calendar" icon={TabIcon} style={styles.contentStyle}
+                   navigationBarStyle={{backgroundColor: Color.lightBackground}}>
+              <Scene key="schedule" component={Information} title="Schedule" />
+            </Scene>
+
+            <Scene key="tab4" title="info" icon={TabIcon} style={styles.contentStyle}
                    navigationBarStyle={{backgroundColor: Color.lightBackground}}>
               <Scene key="info" component={Information} title="information" />
             </Scene>
+
 
           </Scene>
 
