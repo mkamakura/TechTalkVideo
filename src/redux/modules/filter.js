@@ -24,7 +24,7 @@ const INITIAL_STATE = {
 export default handleActions({
   [FILTER_INIT]: (state, { payload: { names } }) => ({
     ...state,
-    tags: names.map((name) => ({ name, selected: false })),
+    tags: [{ name: 'Bookmarks', selected: false }, ...names.map((name) => ({ name, selected: false }))],
   }),
 
   [FILTER_ADD]: (state, { payload: { name } }) => ({

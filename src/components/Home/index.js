@@ -11,8 +11,8 @@ import {
   StyleSheet,
   ActionSheetIOS,
 } from 'react-native';
-import Image from 'react-native-image-progress';
-import ProgressBar from 'react-native-progress/Bar';
+import CacheableImage from 'react-native-cacheable-image';
+
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Spinner from 'react-native-spinkit';
@@ -27,7 +27,7 @@ export default compose(
   connect(
     (state) => ({
       filter: state.filter,
-      bookbark: state.bookmark,
+      bookmark: state.bookmark,
     }),
     (dispatch) => ({
       initFilter: (names) => dispatch(initFilter({ names })),
@@ -72,10 +72,13 @@ export default compose(
     }, (buttonIndex) => this.props.onAddBookmark(name));
   }
 
-  renderRow(data, filterTags) {
+  renderRow(data, filterTags, bookmark) {
+    console.log('bookmark', bookmark);
     let isMatch = false;
     if (filterTags.length === 0) isMatch = true;
     if (!isMatch) data.tags.forEach((confTag) => filterTags.forEach((filterTag) => confTag === filterTag.name && (isMatch = true)));
+    //if (!isMatch) filterTags.forEach((filterTag) =>
+    //'Bookmarks' === filterTag.name && bookmark.items.forEach((item) => data.name === item && (isMatch = true)));
 
     if (isMatch) {
       return (
@@ -83,7 +86,7 @@ export default compose(
           onPress={() => Actions.talks({ title: data.name, playlistid: data.playlistid })}
           onLongPress={() => this.onLongPress(data.name)}
           style={[styles.confItem, { width: this.itemWidth }]}>
-          <Image source={{ uri: data.image }} style={styles.confItemImage} indicator={ProgressBar}>
+          <CacheableImage source={{ uri: data.image }} style={styles.confItemImage}>
             <View style={styles.confItemInfoArea}>
               <Text style={styles.confItemInfoAreaTitle}>
                 <Icon name="youtube-play" style={styles.confItemInfoAreaTitleIcon} /> {data.name}
@@ -92,7 +95,7 @@ export default compose(
                 <Icon name="calendar" style={styles.confItemInfoAreaDateIcon} /> {data.date}
               </Text>
             </View>
-          </Image>
+          </CacheableImage>
         </TouchableOpacity>
       );
     }
@@ -115,7 +118,7 @@ export default compose(
   }
 
   render() {
-    const { visible, tags } = this.props.filter;
+    const { visible, tags, bookmark } = this.props.filter;
     const filterTags = tags.filter((tag) => tag.selected);
 
     return (
@@ -130,7 +133,7 @@ export default compose(
           contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}
           dataSource={this.state.dataSource}
           renderHeader={() => filterTags.length > 0 && this.renderHeader(filterTags)}
-          renderRow={(rowData) => this.renderRow(rowData, filterTags)}
+          renderRow={(rowData) => this.renderRow(rowData, filterTags, bookmark)}
         />
         {visible && <FilterModal />}
       </View>

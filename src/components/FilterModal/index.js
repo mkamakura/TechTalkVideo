@@ -71,8 +71,7 @@ export default compose(
       clearFilter,
       tags,
     } = this.props;
-
-    console.log('update render');
+    const deviceWidth = Dimensions.get('window').width;
 
     return (
       <Modal
@@ -86,11 +85,14 @@ export default compose(
         swipeArea={0}
       >
         <View style={styles.header}>
-          <Text onPress={visibleFilter}>CLOSE</Text>
-          <Text onPress={clearFilter}>CLEAR</Text>
+          <TouchableOpacity style={{width: deviceWidth / 2, alignItems: 'center'}} onPress={clearFilter}>
+            <Text>CLEAR</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{width: deviceWidth / 2, alignItems: 'center'}} onPress={visibleFilter}>
+            <Text>CLOSE</Text>
+          </TouchableOpacity>
         </View>
         <ListView
-          contentContainerStyle={{ flexWrap: 'wrap' }}
           style={{ backgroundColor: '#0277BD', }}
           dataSource={this.state.dataSource}
           renderRow={(rowData, secid, rowId) => this.renderRow(rowData, rowId)}
@@ -100,7 +102,6 @@ export default compose(
   }
 });
 
-const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 const modalHeight = deviceHeight / 2;
 const SIZE = 24;
@@ -121,7 +122,6 @@ const styles = StyleSheet.create({
     backgroundColor: Color.darkBackground,
   },
   listAreaRow: {
-    width: deviceWidth,
     height: 50,
 
     flex: 1,
